@@ -1,8 +1,7 @@
 [project]
 name = "legal-ease-ai"
 version = "1.0.0"
-description = "LegalEase AI"
 requires-python = ">=3.9"
 
 [tool.vercel]
-entrypoint = "backend.main:app"
+entrypoint = "api/index.py"
