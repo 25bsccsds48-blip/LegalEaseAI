@@ -1,4 +1,5 @@
-[project]
-name = "legal-ease-ai"
-version = "1.0.0"
-requires-python = ">=3.9"
+from fastapi import FastAPI
+app = FastAPI()
+@app.get("/")
+def root():
+    return {"status": "Live da"}
