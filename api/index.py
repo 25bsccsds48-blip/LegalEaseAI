@@ -1,1 +1,4 @@
-from backend.main import app
+[project]
+name = "legal-ease-ai"
+version = "1.0.0"
+requires-python = ">=3.9"
