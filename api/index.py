@@ -1,52 +1,19 @@
-from http.server import BaseHTTPRequestHandler
-import json, os, urllib.request
-
-def call_gemini(prompt):
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return "API Key set pannala da! Vercel la add pannu!"
-
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    data = {"contents": [{"parts": [{"text": prompt}]}]}
-
-    try:
-        req = urllib.request.Request(url, data=json.dumps(data).encode(), headers={'Content-Type':'application/json'})
-        with urllib.request.urlopen(req) as res:
-            result = json.loads(res.read().decode())
-            return result['candidates'][0]['content']['parts'][0]['text']
-    except Exception as e:
-        return f"Error da: {str(e)}"
-
-class handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type','application/json')
-        self.send_header('Access-Control-Allow-Origin','*')
-        self.end_headers()
-        self.wfile.write(json.dumps({"status":"LegalEaseAI Full AI Live da! 🚀"}).encode())
-
-    def do_POST(self):
-        length = int(self.headers.get('Content-Length', 0))
-        body = self.rfile.read(length).decode()
-        data = json.loads(body) if body else {}
-        text = data.get('text','')
-
-        if 'summarize' in self.path:
-            prompt = f"You are LegalEaseAI. Explain this legal text in simple Tamil + English: {text}"
-        else:
-            prompt = f"You are LegalEaseAI assistant. Answer: {text}"
-
-        ai_result = call_gemini(prompt)
-
-        self.send_response(200)
-        self.send_header('Content-type','application/json')
-        self.send_header('Access-Control-Allow-Origin','*')
-        self.end_headers()
-        self.wfile.write(json.dumps({"result": ai_result}).encode())
-
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin','*')
-        self.send_header('Access-Control-Allow-Methods','GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers','Content-Type')
-        self.end_headers()
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>LegalEaseAI</title>
+<style>body{font-family:system-ui;background:#0f172a;color:white;max-width:700px;margin:40px auto;padding:20px}textarea{width:100%;height:120px;padding:12px;border-radius:12px;background:#1e293b;color:white;border:1px solid #334155}button{background:#38bdf8;color:black;padding:12px 24px;border-radius:12px;border:0;font-weight:bold;cursor:pointer;margin-top:10px} #out{background:#1e293b;padding:16px;border-radius:12px;margin-top:20px;white-space:pre-wrap}</style>
+</head><body>
+<h1>⚖️ LegalEaseAI</h1><p>Legal text ah simple ah puriya vekkum AI da!</p>
+<textarea id="inp" placeholder="Inga unga legal document text ah paste pannunga da..."></textarea><br>
+<button onclick="ask()">Summarize pannu da!</button>
+<div id="out">Result inga varum da...</div>
+<script>
+async function ask(){
+ let t=document.getElementById('inp').value;
+ document.getElementById('out').innerText="Yosikiren da... ⏳";
+ let r=await fetch('/api/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})});
+ let d=await r.json();
+ document.getElementById('out').innerText=d.result;
+}
+</script>
+</body></html>
