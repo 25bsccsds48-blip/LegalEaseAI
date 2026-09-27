@@ -19,7 +19,7 @@ class handler(BaseHTTPRequestHandler):
         # Try Gemini
         try:
             if api_key:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
                 payload = {"contents": [{"parts": [{"text": f"Explain this legal text in simple Tanglish for common man: {text[:2000]}"}]}]}
                 req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
                 with urllib.request.urlopen(req, timeout=10) as resp:
