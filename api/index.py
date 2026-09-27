@@ -1,5 +1,10 @@
-from fastapi import FastAPI
-app = FastAPI()
-@app.get("/")
-def root():
-    return {"status": "Live da"}
+from http.server import BaseHTTPRequestHandler
+import json
+
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        self.wfile.write(json.dumps({"status": "Live da", "message": "LegalEase AI is working!"}).encode())
+        return
